@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.env
+
+# Javascript/Node
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+coverage/
+
+# Docker
+.docker_ids
+
+# DVC
+/dvc_plots/
+/dvc_metrics/
+
+# Editor
+.vscode/
+.idea/
+
+# Database
+*.db
+users.db
+instance/
+
+# Logs
+*.log
+mlruns/
+/dataset.csv

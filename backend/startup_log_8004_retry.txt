@@ -1,0 +1,37 @@
+INFO:     Started server process [15404]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8004 (Press CTRL+C to quit)
+INFO:     127.0.0.1:63562 - "POST /upload_resume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63562 - "OPTIONS /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63562 - "OPTIONS /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63562 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64297 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49245 - "OPTIONS /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58681 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60078 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53867 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "POST /upload_resume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "OPTIONS /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "OPTIONS /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "OPTIONS /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64440 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53726 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55672 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49870 - "POST /upload_resume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49870 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49870 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53278 - "OPTIONS /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53278 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64678 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65478 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52539 - "POST /upload_resume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52539 - "OPTIONS /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52539 - "OPTIONS /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52539 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52539 - "POST /generate_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54520 - "OPTIONS /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58709 - "POST /chat HTTP/1.1" 200 OK
+^C

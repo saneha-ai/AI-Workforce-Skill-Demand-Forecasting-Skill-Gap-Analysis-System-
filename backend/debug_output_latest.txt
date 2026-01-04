@@ -1,0 +1,4 @@
+DEBUG: API Key present: True
+DEBUG: Testing model: gemini-flash-latest
+SUCCESS: Response received:
+Hello! Yes, I can receive your message clearly. How may I help you today?

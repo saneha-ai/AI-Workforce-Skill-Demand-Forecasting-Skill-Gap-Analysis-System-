@@ -1,0 +1,7 @@
+DEBUG: API Key present: True
+DEBUG: Testing model: gemini-1.5-flash
+
+ERROR DETAILS:
+Type: <class 'google.api_core.exceptions.NotFound'>
+Message: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+Args: ('models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.',)

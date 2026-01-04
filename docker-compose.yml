@@ -1,0 +1,16 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: career_match_backend
+    ports:
+      - "8006:8006"
+    volumes:
+      # Persist MLflow data
+      - ./backend/mlruns:/app/mlruns
+      # Mount dataset so updates don't require rebuild
+      - ./dataset.csv:/app/../dataset.csv
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: unless-stopped

@@ -1,0 +1,13 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.ipynb_checkpoints
+mlruns/
+server_log*.txt
+startup_log*.txt
+debug_*.txt
