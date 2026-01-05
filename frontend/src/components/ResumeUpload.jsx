@@ -20,7 +20,8 @@ const ResumeUpload = ({ onAnalysisComplete, setLoading }) => {
 
         try {
             // Direct localhost URL for simplicity in this setup
-            const response = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/upload_resume', formData, {
+            const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8006').replace(/\/$/, '');
+            const response = await axios.post(`${apiUrl}/upload_resume`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
