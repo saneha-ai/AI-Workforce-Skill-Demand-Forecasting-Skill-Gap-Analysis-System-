@@ -15,7 +15,7 @@ class JobMatcher:
         self.dataset_path = dataset_path
         if not os.path.exists(self.dataset_path):
             # Fallback for relative path if absolute fails or for flexibility
-            self.dataset_path = os.path.join(os.path.dirname(__file__), "..", "dataset.csv")
+            self.dataset_path = os.path.join(os.path.dirname(__file__), "dataset.csv")
         
         try:
             self.df = pd.read_csv(self.dataset_path)
