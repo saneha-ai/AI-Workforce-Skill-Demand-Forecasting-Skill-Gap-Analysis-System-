@@ -46,7 +46,8 @@ const DriftDashboard = ({ userContext }) => {
         }
 
         try {
-            const res = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/debug_drift', payload);
+            const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8006').replace(/\/$/, '');
+            const res = await axios.post(`${apiUrl}/debug_drift`, payload);
             setResult(res.data);
             setStatus('success');
         } catch (e) {
