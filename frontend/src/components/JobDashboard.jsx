@@ -17,7 +17,8 @@ const JobDashboard = ({ data }) => {
     const handleExplain = async (jobRole) => {
         setExplainingJob(jobRole);
         try {
-            const res = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/explain_match', {
+            const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8006').replace(/\/$/, '');
+            const res = await axios.post(`${apiUrl}/explain_match`, {
                 skills: extracted_skills,
                 job_role: jobRole
             });
@@ -35,7 +36,8 @@ const JobDashboard = ({ data }) => {
         const fetchReport = async () => {
             setLoadingReport(true);
             try {
-                const res = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/generate_report', {
+                const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8006').replace(/\/$/, '');
+                const res = await axios.post(`${apiUrl}/generate_report`, {
                     skills: extracted_skills,
                     matches: matches
                 });

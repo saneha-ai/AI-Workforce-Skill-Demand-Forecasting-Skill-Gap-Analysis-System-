@@ -29,7 +29,8 @@ const ChatInterface = ({ context }) => {
         setLoading(true);
 
         try {
-            const response = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/chat', {
+            const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8006').replace(/\/$/, '');
+            const response = await axios.post(`${apiUrl}/chat`, {
                 message: userMsg,
                 context: context // Send Dashboard data as context
             });
