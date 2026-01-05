@@ -18,7 +18,8 @@ const Login = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/auth/login', formData);
+            const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8006').replace(/\/$/, '');
+            const response = await axios.post(`${apiUrl}/auth/login`, formData);
             const { access_token, user } = response.data;
 
             // Store Session
