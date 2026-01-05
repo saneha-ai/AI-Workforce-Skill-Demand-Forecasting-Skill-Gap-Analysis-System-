@@ -1,20 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Target, CheckCircle, AlertTriangle, BookOpen, Building } from 'lucide-react';
+import { Target, CheckCircle, AlertTriangle, BookOpen, Building, BrainCircuit, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
+import ExplanationModal from './ExplanationModal';
 
 const JobDashboard = ({ data }) => {
     const { matches, extracted_skills } = data;
     const [report, setReport] = useState(null);
     const [loadingReport, setLoadingReport] = useState(false);
 
+    // Explanation State
+    const [explanationData, setExplanationData] = useState(null);
+    const [explainingJob, setExplainingJob] = useState(null); // stores job_role being explained
+
+    const handleExplain = async (jobRole) => {
+        setExplainingJob(jobRole);
+        try {
+            const res = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/explain_match', {
+                skills: extracted_skills,
+                job_role: jobRole
+            });
+            setExplanationData(res.data);
+        } catch (e) {
+            console.error("Explanation failed", e);
+            alert("Could not load explanation. Ensure backend is running.");
+        } finally {
+            setExplainingJob(null);
+        }
+    };
+
     useEffect(() => {
         // Fetch Company Report on Mount
         const fetchReport = async () => {
             setLoadingReport(true);
             try {
-                const res = await axios.post('http://localhost:8006/generate_report', {
+                const res = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/generate_report', {
                     skills: extracted_skills,
                     matches: matches
                 });
@@ -86,7 +107,21 @@ const JobDashboard = ({ data }) => {
                                 <div key={idx} className="p-4 rounded-lg bg-white/5 border border-white/5 hover:border-white/10 transition-all">
                                     <div className="flex justify-between items-start mb-2">
                                         <div>
-                                            <h3 className="font-medium text-lg">{job.job_role}</h3>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-medium text-lg">{job.job_role}</h3>
+                                                <button
+                                                    onClick={() => handleExplain(job.job_role)}
+                                                    disabled={explainingJob === job.job_role}
+                                                    className="p-1.5 rounded-full bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors"
+                                                    title="Explain this match"
+                                                >
+                                                    {explainingJob === job.job_role ? (
+                                                        <Loader2 size={16} className="animate-spin" />
+                                                    ) : (
+                                                        <BrainCircuit size={16} />
+                                                    )}
+                                                </button>
+                                            </div>
                                             <p className="text-emerald-400 font-medium text-sm">{job.company}</p>
                                             <p className="text-slate-400 text-xs mt-1">{job.domain} • {job.min_experience}</p>
                                         </div>
@@ -178,6 +213,14 @@ const JobDashboard = ({ data }) => {
                     </div>
                 )}
             </div>
+            {/* Explanation Modal */}
+            {explanationData && (
+                <ExplanationModal
+                    jobRole={explanationData.job_role}
+                    explanation={explanationData.explanation}
+                    onClose={() => setExplanationData(null)}
+                />
+            )}
         </div>
     );
 };

@@ -30,6 +30,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
+Instrumentator().instrument(app).expose(app)
+
 app.include_router(auth_router)
 
 # Initialize modules
@@ -37,9 +41,21 @@ app.include_router(auth_router)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(BASE_DIR, "..", "dataset.csv")
 
+from drift import DriftMonitor
+
 matcher = JobMatcher(DATASET_PATH)
 extractor = ResumeExtractor(known_skills=matcher.get_all_skills())
 chatbot = CareerChatbot()
+
+# Initialize Drift Monitor using Job Vectors as Reference
+drift_monitor = None
+try:
+    if matcher.job_vectors is not None:
+        drift_monitor = DriftMonitor(matcher.job_vectors)
+    else:
+        print("Warning: Job Vectors empty, Drift Monitor skipped.")
+except Exception as e:
+    print(f"Drift Init Error: {e}")
 
 class SkillRequest(BaseModel):
     skills: List[str]
@@ -97,6 +113,38 @@ def generate_report_endpoint(request: ReportRequest):
     # Pass matcher.df so we can look up dataset companies
     report = generate_company_report(request.skills, request.matches, matcher.df)
     return {"report": report}
+
+class ExplainRequest(BaseModel):
+    skills: List[str]
+    job_role: str
+
+@app.post("/explain_match")
+def explain_match_endpoint(request: ExplainRequest):
+    explanation = matcher.explain_match(request.skills, request.job_role)
+    if "error" in explanation:
+        raise HTTPException(status_code=404, detail=explanation["error"])
+    return explanation
+
+class DriftRequest(BaseModel):
+    skills_batch: List[List[str]]
+
+@app.post("/debug_drift")
+def debug_drift_endpoint(request: DriftRequest):
+    if not drift_monitor:
+         raise HTTPException(status_code=503, detail="Drift Monitor not initialized")
+         
+    # Convert batch of skills -> Strings -> Vectors
+    batch_strings = [" ".join(skills).lower() for skills in request.skills_batch]
+    
+    # Use existing vectorizer
+    if not matcher.vectorizer:
+        raise HTTPException(status_code=500, detail="Vectorizer not found")
+        
+    new_vectors = matcher.vectorizer.transform(batch_strings)
+    
+    # Check
+    report = drift_monitor.check_drift(new_vectors)
+    return report
 
 if __name__ == "__main__":
     import uvicorn

@@ -7,8 +7,11 @@ WORKDIR /app
 # Copy the requirements file into the container
 COPY requirements.txt .
 
+# Install build dependencies for SHAP and others
+RUN apt-get update && apt-get install -y build-essential --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
 # Copy the current directory contents into the container at /app
 COPY . .

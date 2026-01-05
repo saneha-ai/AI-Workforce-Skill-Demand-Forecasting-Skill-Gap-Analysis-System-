@@ -13,4 +13,54 @@ services:
       - ./dataset.csv:/app/../dataset.csv
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING=true
     restart: unless-stopped
+
+  mlflow:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: career_match_mlflow
+    command: mlflow ui --host 0.0.0.0 --port 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/mlruns:/app/mlruns
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: career_match_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: career_match_prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: career_match_grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana_data:

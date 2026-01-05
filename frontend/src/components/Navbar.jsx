@@ -31,6 +31,7 @@ const Navbar = () => {
                             <a href="#home" className="hover:text-white transition-colors">Home</a>
                             <a href="#upload" className="hover:text-white transition-colors">Analyze</a>
                             <a href="#dashboard" className="hover:text-white transition-colors">Dashboard</a>
+                            <a onClick={() => navigate('/drift')} className="hover:text-white transition-colors cursor-pointer">Drift Monitor</a>
                         </div>
 
                         <div className="flex items-center gap-4 border-l border-white/10 pl-6">

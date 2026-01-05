@@ -34,7 +34,7 @@ const Signup = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8006/auth/signup', payload);
+            const response = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:8006') + '/auth/signup', payload);
             const { access_token, user } = response.data;
 
             localStorage.setItem('token', access_token);

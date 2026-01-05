@@ -6,6 +6,7 @@ import numpy as np
 import math
 import mlflow
 import mlflow.sklearn
+import shap
 
 
 
@@ -28,11 +29,25 @@ class JobMatcher:
             
             # --- MLflow Initialization ---
             try:
+                import json
                 mlflow.set_experiment("CareerMatch_JobMatcher")
                 with mlflow.start_run(run_name="Model_Initialization", nested=True):
                     mlflow.log_param("dataset_path", self.dataset_path)
                     mlflow.log_param("dataset_rows", len(self.df))
                     mlflow.log_param("vocabulary_size", len(self.vectorizer.get_feature_names_out()))
+                    
+                    # Log Artifact: Dataset Info
+                    dataset_info = {
+                        "columns": list(self.df.columns),
+                        "shape": self.df.shape,
+                        "sample_skills": self.vectorizer.get_feature_names_out()[:10].tolist()
+                    }
+                    info_file = "dataset_info.json"
+                    with open(info_file, "w") as f:
+                        json.dump(dataset_info, f, indent=2)
+                    mlflow.log_artifact(info_file)
+                    if os.path.exists(info_file):
+                        os.remove(info_file)
             except Exception as e:
                 print(f"MLflow Init Error: {e}")
             
@@ -136,3 +151,49 @@ class JobMatcher:
             for s in skills_str.split(','):
                 all_skills.add(s.strip())
         return all_skills
+
+    def explain_match(self, user_skills, job_role):
+        """
+        Explains why user_skills matched with a specific job_role.
+        Returns a list of contributing features (skills) and their SHAP/importance values.
+        """
+        if self.df.empty or self.vectorizer is None:
+            return {"error": "Model not valid"}
+
+        # Find the specific job vector
+        job_row = self.df[self.df['job_role'] == job_role]
+        if job_row.empty:
+            return {"error": "Job not found"}
+        
+        job_idx = job_row.index[0]
+        # Get density matrix row
+        job_vec = self.job_vectors[job_idx].toarray().flatten()
+
+        # Vectorize user skills
+        user_skills_str = " ".join([s.lower() for s in user_skills])
+        user_vec = self.vectorizer.transform([user_skills_str]).toarray().flatten()
+
+        # Calculate Element-wise contribution (Linear SHAP for Cosine/Dot Product)
+        # Contribution = User_TFIDF * Job_TFIDF
+        contributions = user_vec * job_vec
+        
+        # Get Feature Names
+        feature_names = self.vectorizer.get_feature_names_out()
+
+        # Create list of (feature, value)
+        explanation = []
+        for i, val in enumerate(contributions):
+            if val > 0: # Only positive contributions (matches)
+                explanation.append({
+                    "feature": feature_names[i],
+                    "value": round(float(val), 4)
+                })
+        
+        # Sort by impact
+        explanation.sort(key=lambda x: x['value'], reverse=True)
+        
+        return {
+            "job_role": job_role,
+            "explanation": explanation,
+            "base_value": 0.0 # Cosine baseline
+        }

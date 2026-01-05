@@ -7,6 +7,7 @@ import JobDashboard from './components/JobDashboard';
 import ChatInterface from './components/ChatInterface';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import DriftDashboard from './components/DriftDashboard';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -33,16 +34,8 @@ const Layout = ({ children }) => {
 };
 
 // Application Home (Dashboard)
-const MainApp = () => {
-    const [analysisResult, setAnalysisResult] = useState(null);
+const MainApp = ({ onAnalysisComplete, analysisResult }) => {
     const [loading, setLoading] = useState(false);
-
-    const handleAnalysisComplete = (data) => {
-        setAnalysisResult(data);
-        setTimeout(() => {
-            document.getElementById('dashboard')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-    };
 
     return (
         <div className="space-y-24">
@@ -51,7 +44,7 @@ const MainApp = () => {
             </section>
 
             <section id="upload" className="max-w-4xl mx-auto">
-                <ResumeUpload onAnalysisComplete={handleAnalysisComplete} setLoading={setLoading} />
+                <ResumeUpload onAnalysisComplete={onAnalysisComplete} setLoading={setLoading} />
             </section>
 
             {analysisResult && (
@@ -66,6 +59,15 @@ const MainApp = () => {
 };
 
 function App() {
+    const [analysisResult, setAnalysisResult] = useState(null);
+
+    const handleAnalysisComplete = (data) => {
+        setAnalysisResult(data);
+        setTimeout(() => {
+            document.getElementById('dashboard')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    };
+
     return (
         <Router>
             <div className="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-blue-500/30">
@@ -87,13 +89,22 @@ function App() {
                     <Route path="/dashboard" element={
                         <ProtectedRoute>
                             <Layout>
-                                <MainApp />
+                                <MainApp onAnalysisComplete={handleAnalysisComplete} analysisResult={analysisResult} />
+                            </Layout>
+                        </ProtectedRoute>
+
+                    } />
+
+                    <Route path="/drift" element={
+                        <ProtectedRoute>
+                            <Layout>
+                                <DriftDashboard userContext={analysisResult} />
                             </Layout>
                         </ProtectedRoute>
                     } />
                 </Routes>
             </div>
-        </Router>
+        </Router >
     );
 }
 
