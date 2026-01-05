@@ -115,6 +115,9 @@ const Signup = () => {
                 <p className="mt-6 text-center text-slate-400 text-sm">
                     Already have an account? <a href="/login" className="text-blue-400 hover:text-blue-300">Login</a>
                 </p>
+                <div className="mt-4 text-center text-xs text-gray-500 font-mono">
+                    DEBUG: API_URL = {String(import.meta.env.VITE_API_URL)}
+                </div>
             </div>
         </div>
     );
